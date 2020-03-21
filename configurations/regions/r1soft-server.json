@@ -14,24 +14,28 @@
         "owners": ["137112412989"], 
         "most_recent": true 
       }, 
-      "ami_name": "golden-image {{timestamp}}"
+      "ami_name": "r1soft-server {{timestamp}}"
     }],
     "provisioners": [ 
         {
             "type": "file",
-            "source": "./test.txt",
+            "source": "./r1soft.repo",
             "destination": "/tmp/"
         },
         {
             "type": "shell",
             "inline":[
-                "sudo yum update -y"
+                "sudo yum update -y",
+                "sudo mv /tmp/r1soft.repo /etc/yum.repos.d/",
+                "sudo yum update -y",
+                "sudo yum install epel-release -y",
+                "sudo yum install r1soft-cdp-enterprise-server -y",
+                "sudo r1soft-setup  --user admin --pass strong --http-port 80",
+                "sudo systemctl cdp-server restart",
+                "sudo systemctl enable cdp-server"
             
             ]
-        }, 
-        { 
-            "type": "breakpoint", 
-            "note": "Wait for you to delete" 
         } 
+
     ]
-}      
+}
